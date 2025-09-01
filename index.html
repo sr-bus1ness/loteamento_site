@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <title>Loteamento – Painel do Vendedor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <h1>Gestão de Lotes</h1>
+    <div class="switcher">
+      <label for="loteamentoSelect">Loteamento:</label>
+      <select id="loteamentoSelect"></select>
+    </div>
+  </header>
+
+  <main class="layout">
+    <!-- resumo lateral -->
+    <aside class="sidebar card">
+      <h2>Resumo</h2>
+      <div class="stats">
+        <div class="stat"><span>Total:</span><strong id="totalLotes">0</strong></div>
+        <div class="stat"><span>Disponíveis:</span><strong id="qtdDisp">0</strong><small id="pctDisp">0%</small></div>
+        <div class="stat"><span>Reservados:</span><strong id="qtdRes">0</strong><small id="pctRes">0%</small></div>
+        <div class="stat"><span>Vendidos:</span><strong id="qtdVen">0</strong><small id="pctVen">0%</small></div>
+      </div>
+
+      <h3>Legenda</h3>
+      <ul class="legend">
+        <li><span class="dot disponivel"></span> Disponível</li>
+        <li><span class="dot reservado"></span> Reservado</li>
+        <li><span class="dot vendido"></span> Vendido</li>
+      </ul>
+
+      <div class="io">
+        <button id="exportBtn">Exportar dados</button>
+        <label class="importLabel">
+          Importar dados
+          <input id="importInput" type="file" accept="application/json" hidden />
+        </label>
+      </div>
+    </aside>
+
+    <!-- planta + painel do lote -->
+    <section class="content">
+      <div class="plant card">
+        <div class="plantHeader">
+          <h2 id="plantTitle">Planta</h2>
+          <!-- (opcional) você pode trocar o “grid” por uma imagem de planta depois -->
+        </div>
+        <div id="grid" class="grid"></div>
+      </div>
+
+      <div class="detail card" id="detailCard">
+        <h2>Detalhes do Lote</h2>
+        <div id="noSelection">Selecione um lote na planta.</div>
+        <div id="detailBody" class="hidden">
+          <div class="row">
+            <div><strong>Lote:</strong> <span id="lotId"></span></div>
+            <div><strong>Status:</strong> <span id="lotStatusBadge" class="badge"></span></div>
+          </div>
+          <div class="row">
+            <div><label>Preço (R$):</label> <input id="lotPreco" type="number" min="0" step="0.01" /></div>
+            <div><label>Parcelas:</label> <input id="lotParcelas" type="number" min="1" step="1" /></div>
+          </div>
+          <div class="buttons">
+            <button data-status="disponivel" class="btn btn-disp">Marcar Disponível</button>
+            <button data-status="reservado" class="btn btn-res">Marcar Reservado</button>
+            <button data-status="vendido" class="btn btn-ven">Marcar Vendido</button>
+            <button id="saveBtn" class="btn">Salvar alterações</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <small>Projeto didático – GitHub Pages (sem servidor). Use Exportar/Importar para levar dados a outro PC.</small>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
