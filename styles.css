@@ -1,77 +1,598 @@
-:root{
-  --bg:#0b1020; --panel:#121a33; --muted:#93a0c7; --text:#eaf0ff; --card:#0f1730; --line:#22305d;
-  --disp:#22c55e; --res:#eab308; --ven:#ef4444;
+/* Reset e base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-*{ box-sizing: border-box; }
-html,body{ margin:0; padding:0; background:var(--bg); color:var(--text); font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Helvetica,Arial; }
-
-.topbar{ display:flex; align-items:center; justify-content:space-between; padding:16px 20px; background:var(--panel); border-bottom:1px solid var(--line); position:sticky; top:0; z-index:2;}
-.topbar h1{ margin:0; font-size:20px; }
-.switcher label{ margin-right:8px; color:var(--muted); }
-select{ background:#0b1330; color:var(--text); border:1px solid var(--line); padding:6px 8px; border-radius:8px; }
-
-.layout{ display:grid; grid-template-columns: 300px 1fr; gap:16px; padding:16px; }
-.card{ background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px; box-shadow: 0 6px 24px rgba(0,0,0,.18); }
-
-.sidebar h2{ margin-top:0; }
-.stats{ display:grid; gap:8px; margin-bottom:16px; }
-.stat{ display:flex; align-items:center; justify-content:space-between; }
-.stat small{ color:var(--muted); margin-left:8px; }
-
-.legend{ list-style:none; padding:0; margin:0 0 16px 0; display:grid; gap:6px; }
-.legend .dot{ display:inline-block; width:12px; height:12px; border-radius:50%; margin-right:8px; vertical-align:middle; }
-.legend .disponivel{ background:var(--disp); }
-.legend .reservado{ background:var(--res); }
-.legend .vendido{ background:var(--ven); }
-
-.io{ display:flex; gap:10px; align-items:center; }
-button, .importLabel{ background:#1a2451; border:1px solid var(--line); color:var(--text); padding:8px 10px; border-radius:10px; cursor:pointer; }
-button:hover, .importLabel:hover{ filter:brightness(1.1); }
-.importLabel{ display:inline-flex; align-items:center; gap:8px; }
-
-.content{ display:grid; gap:16px; }
-.plantHeader{ display:flex; align-items:center; justify-content:space-between; }
-#grid.grid{
-  display:grid;
-  grid-template-columns: repeat(6, minmax(90px, 1fr)); /* ajuste qntd colunas */
-  gap:8px;
-  margin-top:12px;
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background-color: #f8fafc;
+    color: #1e293b;
+    overflow-x: hidden;
 }
 
-.lot{
-  display:flex; align-items:center; justify-content:center;
-  border:1px solid var(--line); border-radius:12px; padding:12px; min-height:70px;
-  background:#0b1330; cursor:pointer; user-select:none;
-  transition: transform .08s ease, box-shadow .15s ease;
+/* Header fixo */
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    border-bottom: 1px solid #e2e8f0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    padding: 0.75rem 1rem;
 }
-.lot:hover{ transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,.25); }
-.lot small{ color:var(--muted); display:block; font-size:12px; }
-.lot strong{ display:block; font-size:14px; }
 
-.lot.disponivel{ background: rgba(34,197,94,.15); border-color: rgba(34,197,94,.5); }
-.lot.reservado{ background: rgba(234,179,8,.15); border-color: rgba(234,179,8,.5); }
-.lot.vendido{ background: rgba(239,68,68,.15); border-color: rgba(239,68,68,.5); }
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
 
-.detail h2{ margin-top:0; }
-.hidden{ display:none; }
-.row{ display:flex; gap:16px; margin:10px 0; flex-wrap:wrap; }
-.row label{ color:var(--muted); margin-right:6px; }
-input[type="number"]{ width:140px; padding:6px 8px; border-radius:8px; background:#0b1330; color:var(--text); border:1px solid var(--line); }
+.logo-section {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
 
-.badge{ padding:4px 8px; border-radius:999px; font-size:12px; border:1px solid var(--line); }
-.badge.disponivel{ background:var(--disp); color:#031b0a; }
-.badge.reservado{ background:var(--res); color:#2f2401; }
-.badge.vendido{ background:var(--ven); color:#2a0101; }
+.logo {
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+}
 
-.buttons{ display:flex; gap:8px; flex-wrap:wrap; }
-.btn-disp{ background: var(--disp); color:#05210c; }
-.btn-res{ background: var(--res); color:#2f2401; }
-.btn-ven{ background: var(--ven); color:#2a0101; }
+.logo-section h1 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1e293b;
+}
 
-.foot{ padding:18px; text-align:center; color:var(--muted); }
+.controls-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
 
-@media (max-width: 900px){
-  .layout{ grid-template-columns: 1fr; }
-  #grid.grid{ grid-template-columns: repeat(3, minmax(90px, 1fr)); }
+.loteamento-select {
+    padding: 0.5rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    background: white;
+    font-size: 0.875rem;
+    min-width: 140px;
+}
+
+.btn-localizar {
+    padding: 0.5rem 1rem;
+    background: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: background-color 0.2s;
+}
+
+.btn-localizar:hover {
+    background: #2563eb;
+}
+
+.search-container {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.search-input {
+    padding: 0.5rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px 0 0 6px;
+    font-size: 0.875rem;
+    width: 120px;
+}
+
+.btn-search {
+    padding: 0.5rem 0.75rem;
+    background: #10b981;
+    color: white;
+    border: none;
+    border-radius: 0 6px 6px 0;
+    cursor: pointer;
+    font-size: 0.875rem;
+}
+
+.btn-search:hover {
+    background: #059669;
+}
+
+/* Estatísticas */
+.stats-container {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.stat-item.disponivel {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.stat-item.reservado {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.stat-item.vendido {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.stat-item.bloqueado {
+    background: #f3f4f6;
+    color: #374151;
+}
+
+/* Controles de dados */
+.data-controls {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    justify-content: center;
+}
+
+.btn-data {
+    padding: 0.5rem 1rem;
+    background: #6366f1;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: background-color 0.2s;
+}
+
+.btn-data:hover {
+    background: #4f46e5;
+}
+
+/* Área principal */
+.main-content {
+    margin-top: 200px; /* Espaço para header fixo */
+    height: calc(100vh - 200px);
+    position: relative;
+}
+
+.svg-container {
+    width: 100%;
+    height: 100%;
+    background: white;
+    border-radius: 8px;
+    margin: 1rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.svg-wrapper {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.svg-wrapper svg {
+    width: 100%;
+    height: 100%;
+    cursor: grab;
+}
+
+.svg-wrapper svg:active {
+    cursor: grabbing;
+}
+
+/* Estilos dos lotes no SVG */
+.lote {
+    stroke: #374151;
+    stroke-width: 2;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.lote:hover {
+    stroke-width: 3;
+    filter: brightness(1.1);
+}
+
+.lote.selected {
+    stroke: #1e40af;
+    stroke-width: 4;
+    filter: drop-shadow(0 0 8px rgba(30, 64, 175, 0.5));
+}
+
+/* Cores por status */
+.lote.disponivel {
+    fill: #22c55e;
+}
+
+.lote.reservado {
+    fill: #eab308;
+}
+
+.lote.vendido {
+    fill: #ef4444;
+}
+
+.lote.bloqueado {
+    fill: #6b7280;
+}
+
+/* Painel de detalhes do lote */
+.lote-panel {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    border-top: 1px solid #e2e8f0;
+    box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1001;
+    max-height: 60vh;
+    overflow-y: auto;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+}
+
+.lote-panel:not(.hidden) {
+    transform: translateY(0);
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid #e2e8f0;
+    background: #f8fafc;
+}
+
+.panel-header h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.btn-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #64748b;
+    padding: 0.25rem;
+    border-radius: 4px;
+}
+
+.btn-close:hover {
+    background: #e2e8f0;
+}
+
+.panel-content {
+    padding: 1.5rem;
+}
+
+.lote-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.info-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.info-group label {
+    font-weight: 500;
+    color: #374151;
+    font-size: 0.875rem;
+}
+
+.info-group input {
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 1rem;
+}
+
+.info-group input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.valor-total {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #059669;
+    padding: 0.75rem;
+    background: #ecfdf5;
+    border-radius: 6px;
+    display: inline-block;
+}
+
+.observacao-group {
+    margin-bottom: 1.5rem;
+}
+
+.observacao-group label {
+    display: block;
+    font-weight: 500;
+    color: #374151;
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+}
+
+.observacao-group textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 1rem;
+    resize: vertical;
+    min-height: 80px;
+}
+
+.observacao-group textarea:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.status-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.status-buttons {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.btn-status {
+    padding: 0.75rem 1rem;
+    border: 2px solid transparent;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.875rem;
+    transition: all 0.2s;
+}
+
+.btn-status.disponivel {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.btn-status.disponivel.active {
+    background: #22c55e;
+    color: white;
+    border-color: #16a34a;
+}
+
+.btn-status.reservado {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.btn-status.reservado.active {
+    background: #eab308;
+    color: white;
+    border-color: #ca8a04;
+}
+
+.btn-status.vendido {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.btn-status.vendido.active {
+    background: #ef4444;
+    color: white;
+    border-color: #dc2626;
+}
+
+.btn-status.bloqueado {
+    background: #f3f4f6;
+    color: #374151;
+}
+
+.btn-status.bloqueado.active {
+    background: #6b7280;
+    color: white;
+    border-color: #4b5563;
+}
+
+.btn-salvar {
+    padding: 0.75rem 2rem;
+    background: #059669;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: background-color 0.2s;
+}
+
+.btn-salvar:hover {
+    background: #047857;
+}
+
+/* Loading overlay */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #e2e8f0;
+    border-top: 4px solid #3b82f6;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-overlay p {
+    color: white;
+    font-size: 1.125rem;
+    font-weight: 500;
+}
+
+/* Utilitários */
+.hidden {
+    display: none !important;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .header {
+        padding: 0.5rem;
+    }
+    
+    .header-content {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .controls-section {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .stats-container {
+        gap: 0.75rem;
+        margin-top: 0.75rem;
+    }
+    
+    .stat-item {
+        font-size: 0.75rem;
+        padding: 0.375rem 0.75rem;
+    }
+    
+    .main-content {
+        margin-top: 240px;
+        height: calc(100vh - 240px);
+    }
+    
+    .svg-container {
+        margin: 0.5rem;
+        border-radius: 4px;
+    }
+    
+    .lote-info {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+    
+    .status-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .status-buttons {
+        justify-content: center;
+    }
+    
+    .btn-status {
+        flex: 1;
+        min-width: 0;
+    }
+    
+    .search-input {
+        width: 100px;
+    }
+}
+
+@media (max-width: 480px) {
+    .logo-section h1 {
+        font-size: 1rem;
+    }
+    
+    .controls-section {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .search-container {
+        width: 100%;
+    }
+    
+    .search-input {
+        flex: 1;
+        width: auto;
+    }
+    
+    .stats-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+    }
+    
+    .data-controls {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .btn-data {
+        width: 100%;
+    }
+    
+    .main-content {
+        margin-top: 280px;
+        height: calc(100vh - 280px);
+    }
+    
+    .panel-content {
+        padding: 1rem;
+    }
+    
+    .status-buttons {
+        flex-direction: column;
+    }
 }
