@@ -1,84 +1,135 @@
-<!doctype html>
-<html lang="pt-br">
+<!DOCTYPE html>
+<html lang="pt-BR">
 <head>
-  <meta charset="utf-8" />
-  <title>Loteamento – Painel do Vendedor</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="styles.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão de Loteamentos - Planta Interativa</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="assets/logo.png" type="image/png">
 </head>
 <body>
-  <header class="topbar">
-    <h1>Gestão de Lotes</h1>
-    <div class="switcher">
-      <label for="loteamentoSelect">Loteamento:</label>
-      <select id="loteamentoSelect"></select>
+    <!-- Header fixo -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo-section">
+                <img src="assets/logo.png" alt="Logo" class="logo">
+                <h1>Gestão de Loteamentos</h1>
+            </div>
+            
+            <div class="controls-section">
+                <select id="loteamentoSelect" class="loteamento-select">
+                    <option value="loteamento1">Loteamento 1</option>
+                    <option value="loteamento2">Loteamento 2</option>
+                </select>
+                
+                <button id="localizarBtn" class="btn-localizar" title="Localizar-me">
+                    📍 Localizar
+                </button>
+                
+                <div class="search-container">
+                    <input type="text" id="searchInput" placeholder="Buscar lote (ex: A7)" class="search-input">
+                    <button id="searchBtn" class="btn-search">🔍</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Resumo de estatísticas -->
+        <div class="stats-container">
+            <div class="stat-item disponivel">
+                <span class="stat-label">Disponíveis:</span>
+                <span id="statDisponivel">0 (0%)</span>
+            </div>
+            <div class="stat-item reservado">
+                <span class="stat-label">Reservados:</span>
+                <span id="statReservado">0 (0%)</span>
+            </div>
+            <div class="stat-item vendido">
+                <span class="stat-label">Vendidos:</span>
+                <span id="statVendido">0 (0%)</span>
+            </div>
+            <div class="stat-item bloqueado">
+                <span class="stat-label">Bloqueados:</span>
+                <span id="statBloqueado">0 (0%)</span>
+            </div>
+        </div>
+        
+        <!-- Botões de dados -->
+        <div class="data-controls">
+            <button id="exportBtn" class="btn-data">📤 Exportar</button>
+            <input type="file" id="importInput" accept=".json" style="display: none;">
+            <button id="importBtn" class="btn-data">📥 Importar</button>
+        </div>
+    </header>
+
+    <!-- Área principal -->
+    <main class="main-content">
+        <!-- Container da planta SVG -->
+        <div class="svg-container">
+            <div id="svgWrapper" class="svg-wrapper">
+                <!-- SVG será carregado aqui via JavaScript -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Painel de detalhes do lote (barra inferior) -->
+    <div id="lotePanel" class="lote-panel hidden">
+        <div class="panel-header">
+            <h3 id="loteTitle">Lote A1</h3>
+            <button id="closePanelBtn" class="btn-close">✕</button>
+        </div>
+        
+        <div class="panel-content">
+            <div class="lote-info">
+                <div class="info-group">
+                    <label>Entrada (R$):</label>
+                    <input type="number" id="entradaInput" step="0.01" min="0">
+                </div>
+                
+                <div class="info-group">
+                    <label>Parcelas:</label>
+                    <input type="number" id="parcelasInput" min="1" max="360">
+                </div>
+                
+                <div class="info-group">
+                    <label>Valor da Parcela (R$):</label>
+                    <input type="number" id="valorParcelaInput" step="0.01" min="0">
+                </div>
+                
+                <div class="info-group">
+                    <label>Valor Total (R$):</label>
+                    <span id="valorTotalDisplay" class="valor-total">R$ 0,00</span>
+                </div>
+            </div>
+            
+            <div class="observacao-group">
+                <label>Observações:</label>
+                <textarea id="observacaoInput" placeholder="Observações sobre o lote..."></textarea>
+            </div>
+            
+            <div class="status-controls">
+                <div class="status-buttons">
+                    <button class="btn-status disponivel" data-status="disponivel">Disponível</button>
+                    <button class="btn-status reservado" data-status="reservado">Reservado</button>
+                    <button class="btn-status vendido" data-status="vendido">Vendido</button>
+                    <button class="btn-status bloqueado" data-status="bloqueado">Bloqueado</button>
+                </div>
+                
+                <div class="action-buttons">
+                    <button id="salvarBtn" class="btn-salvar">💾 Salvar</button>
+                </div>
+            </div>
+        </div>
     </div>
-  </header>
 
-  <main class="layout">
-    <!-- resumo lateral -->
-    <aside class="sidebar card">
-      <h2>Resumo</h2>
-      <div class="stats">
-        <div class="stat"><span>Total:</span><strong id="totalLotes">0</strong></div>
-        <div class="stat"><span>Disponíveis:</span><strong id="qtdDisp">0</strong><small id="pctDisp">0%</small></div>
-        <div class="stat"><span>Reservados:</span><strong id="qtdRes">0</strong><small id="pctRes">0%</small></div>
-        <div class="stat"><span>Vendidos:</span><strong id="qtdVen">0</strong><small id="pctVen">0%</small></div>
-      </div>
+    <!-- Loading overlay -->
+    <div id="loadingOverlay" class="loading-overlay hidden">
+        <div class="loading-spinner"></div>
+        <p>Carregando...</p>
+    </div>
 
-      <h3>Legenda</h3>
-      <ul class="legend">
-        <li><span class="dot disponivel"></span> Disponível</li>
-        <li><span class="dot reservado"></span> Reservado</li>
-        <li><span class="dot vendido"></span> Vendido</li>
-      </ul>
-
-      <div class="io">
-        <button id="exportBtn">Exportar dados</button>
-        <label class="importLabel">
-          Importar dados
-          <input id="importInput" type="file" accept="application/json" hidden />
-        </label>
-      </div>
-    </aside>
-
-    <!-- planta + painel do lote -->
-    <section class="content">
-      <div class="plant card">
-        <div class="plantHeader">
-          <h2 id="plantTitle">Planta</h2>
-          <!-- (opcional) você pode trocar o “grid” por uma imagem de planta depois -->
-        </div>
-        <div id="grid" class="grid"></div>
-      </div>
-
-      <div class="detail card" id="detailCard">
-        <h2>Detalhes do Lote</h2>
-        <div id="noSelection">Selecione um lote na planta.</div>
-        <div id="detailBody" class="hidden">
-          <div class="row">
-            <div><strong>Lote:</strong> <span id="lotId"></span></div>
-            <div><strong>Status:</strong> <span id="lotStatusBadge" class="badge"></span></div>
-          </div>
-          <div class="row">
-            <div><label>Preço (R$):</label> <input id="lotPreco" type="number" min="0" step="0.01" /></div>
-            <div><label>Parcelas:</label> <input id="lotParcelas" type="number" min="1" step="1" /></div>
-          </div>
-          <div class="buttons">
-            <button data-status="disponivel" class="btn btn-disp">Marcar Disponível</button>
-            <button data-status="reservado" class="btn btn-res">Marcar Reservado</button>
-            <button data-status="vendido" class="btn btn-ven">Marcar Vendido</button>
-            <button id="saveBtn" class="btn">Salvar alterações</button>
-          </div>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer class="foot">
-    <small>Projeto didático – GitHub Pages (sem servidor). Use Exportar/Importar para levar dados a outro PC.</small>
-  </footer>
-
-  <script src="script.js"></script>
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
